@@ -1,4 +1,4 @@
-MODEL_PATH = "../final_models/yolov8m_synthetic.pt"
+MODEL_PATH = "C:/Users/ligi.sn7a493/Documents/Gambler_Dobot-main/Gambling dobot/demo_application/final_models/yolov8m_synthetic.pt"
 CLASS_NAMES = [
     "10c",
     "10d",

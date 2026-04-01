@@ -9,6 +9,11 @@ class Suit(Enum):
 
 
 class Value(Enum):
+    TWO = "2"
+    THREE = "3"
+    FOUR = "4"
+    FIVE = "5"
+    SIX = "6"
     SEVEN = "7"
     EIGHT = "8"
     NINE = "9"
@@ -37,6 +42,11 @@ class CardTrumpOrder(Enum):
     QUEEN = 5
     EIGHT = 6
     SEVEN = 7
+    SIX = 8
+    FIVE = 9
+    FOUR = 10
+    THREE = 11
+    TWO = 12
 
 
 class CardNonTrumpOrder(Enum):
@@ -48,7 +58,11 @@ class CardNonTrumpOrder(Enum):
     NINE = 5
     EIGHT = 6
     SEVEN = 7
-
+    SIX = 6
+    FIVE = 5
+    FOUR = 4
+    THREE = 3
+    TWO = 2
 
 class CardTrumpValue(Enum):
     SEVEN = 0
@@ -85,10 +99,10 @@ class Card:
 
     def _get_suit_symbol(self):
         return {
-            Suit.SPADES: "♠️",
-            Suit.HEARTS: "♥️",
-            Suit.DIAMONDS: "♦️",
-            Suit.CLUBS: "♣️",
+            Suit.SPADES: "",
+            Suit.HEARTS: "",
+            Suit.DIAMONDS: "",
+            Suit.CLUBS: "",
         }[self.suit]
 
 

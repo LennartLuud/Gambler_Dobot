@@ -8,81 +8,77 @@ import cv2
 
 # Change to 'tuned' to use it as the default one
 DEFAULT_MODEL = "synthetic"
-SHOW_CONFIDENCE = False
+SHOW_CONFIDENCE = True
 
 configuration_dict = {
     "synthetic": {
-        "model_path": "../final_models/yolov8m_synthetic.pt",
+        "model_path": "C:/Users/ligi.sn7a493/Documents/Gambler_Dobot-main/Gambling dobot/demo_application/final_models/yolov8m_synthetic.pt",
         "class_names": [
-            "10c",
-            "10d",
-            "10h",
-            "10s",
-            "2c",
-            "2d",
-            "2h",
-            "2s",
-            "3c",
-            "3d",
-            "3h",
-            "3s",
-            "4c",
-            "4d",
-            "4h",
-            "4s",
-            "5c",
-            "5d",
-            "5h",
-            "5s",
-            "6c",
-            "6d",
-            "6h",
-            "6s",
-            "7c",
-            "7d",
-            "7h",
-            "7s",
-            "8c",
-            "8d",
-            "8h",
-            "8s",
-            "9c",
-            "9d",
-            "9h",
-            "9s",
-            "Ac",
-            "Ad",
-            "Ah",
-            "As",
-            "Jc",
-            "Jd",
-            "Jh",
-            "Js",
-            "Kc",
-            "Kd",
-            "Kh",
-            "Ks",
-            "Qc",
-            "Qd",
-            "Qh",
+            "10",
+            "10",
+            "10",
+            "10",
+            "2",
+            "2",
+            "2",
+            "2",
+            "3",
+            "3",
+            "3",
+            "3",
+            "4",
+            "4",
+            "4",
+            "4",
+            "5",
+            "5",
+            "5",
+            "5",
+            "6",
+            "6",
+            "6",
+            "6",
+            "7",
+            "7",
+            "7",
+            "7",
+            "8",
+            "8",
+            "8",
+            "8",
+            "9",
+            "9",
+            "9",
+            "9",
+            "A",
+            "A",
+            "A",
+            "A",
+            "J",
+            "J",
+            "J",
+            "J",
+            "K",
+            "K",
+            "K",
+            "K",
+            "Q",
+            "Q",
+            "Q",
             "Qs",
         ],
-    },
-    "tuned": {
-        "model_path": "../final_models/yolov8m_tuned.pt",
-        "class_names": ["10h", "2h", "3h", "4h", "5h", "6h", "7h", "8h", "9h", "Ah", "Jh", "Kh", "Qh"],
     },
 }
 
 print("Loading application...")
-
+"""
 configuration_model = sys.argv[1] if len(sys.argv) >= 2 else DEFAULT_MODEL
 
 if configuration_model not in configuration_dict.keys():
     print(f"Allowed parameters for model are {configuration_dict.keys()}. Defaulting to {DEFAULT_MODEL}...")
     configuration_model = DEFAULT_MODEL
-
-current_config = configuration_dict.get(configuration_model)
+"""
+current_config = configuration_dict.get(DEFAULT_MODEL)
 
 # Load the model and class names
 model = YOLO(current_config["model_path"])
@@ -90,8 +86,8 @@ classNames = current_config["class_names"]
 
 # Start webcam
 cap = cv2.VideoCapture(0)
-cap.set(3, 640)
-cap.set(4, 480)
+cap.set(3, 960)
+cap.set(4, 720)
 
 
 # Card values mapping
@@ -150,57 +146,58 @@ card_values = {
     "Qs": 10,
 }
 
-window_title = f"Playing Cards Detection - Model: {configuration_model}"
+window_title = f"Playing Cards Detection - Model: {DEFAULT_MODEL}"
+from collections import Counter, deque
+
+detected_cards = []
+frame_history = deque(maxlen=10)  # stores each frame's detected set
+frame_count = 0
 
 while True:
     success, img = cap.read()
     results = model(img, stream=True)
-
     total_score = 0
+    detected_cards.clear()
+    seen_cards = set()
 
-    # Coordinates
     for r in results:
         boxes = r.boxes
-
         for box in boxes:
-            # Bounding box
             x1, y1, x2, y2 = box.xyxy[0]
-            x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2)  # Convert to int values
+            x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2)
 
-            # Put box in cam
-            cv2.rectangle(img, (x1, y1), (x2, y2), (255, 0, 255), 3)
-
-            # Confidence
             confidence = math.ceil((box.conf[0] * 100)) / 100
-            print("Confidence --->", confidence)
-
-            # Class name
             cls = int(box.cls[0])
             class_name = classNames[cls]
-            print("Class name -->", class_name)
 
-            # Add card value to total score
+            if class_name in seen_cards:
+                continue
+            seen_cards.add(class_name)
+
+            cv2.rectangle(img, (x1, y1), (x2, y2), (255, 0, 255), 3)
             total_score += card_values.get(class_name, 0)
+            detected_cards.append(class_name)
 
-            # Object details
-            org = [x1, y1]
-            font = cv2.FONT_HERSHEY_SIMPLEX
-            fontScale = 1
-            color = (255, 0, 0)
-            thickness = 2
             display_text = class_name if not SHOW_CONFIDENCE else f"{class_name} {confidence}"
-            cv2.putText(img, display_text, org, font, fontScale, color, thickness)
+            cv2.putText(img, display_text, [x1, y1], cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
 
-    # Display total score on the screen
-    score_text = f"Total Score: {total_score}"
-    cv2.putText(img, score_text, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+    frame_history.append(set(detected_cards))  # log this frame's cards
+    frame_count += 1
 
+    # Every 10 frames, write only cards seen in majority (6+) of last 10 frames
+    if frame_count % 10 == 0:
+        all_cards = [card for frame in frame_history for card in frame]
+        counts = Counter(all_cards)
+        stable_cards = [card for card, count in counts.items() if count >= 6]
+
+        with open("detected_cards.txt", "w", encoding="utf-8") as f:
+            f.write(" ".join(stable_cards) + "\n")
+
+    cv2.putText(img, f"Total Score: {total_score}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
     cv2.imshow(window_title, img)
-    if cv2.waitKey(1) == ord("q"):
+
+    key = cv2.waitKey(1)
+    if key == ord("q"):
         break
-    if cv2.waitKey(1) == ord("s"):
+    if key == ord("s"):
         SHOW_CONFIDENCE = not SHOW_CONFIDENCE
-
-
-cap.release()
-cv2.destroyAllWindows()

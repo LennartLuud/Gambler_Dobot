@@ -42,46 +42,50 @@ def display_team_scores():
     st.table(table_data)
 """
 initialize_session_state()
-texts = st.session_state.texts
+#texts = st.session_state.texts
 detector = CardGameDetector(MODEL_PATH, CLASS_NAMES)
 # ----------------------------------------------------------------------------------
 def capture_cards(detector):
     """Capture cards using the webcam and process detections."""
+    """
     texts = st.session_state.texts
     st.write(texts.get("capturing_cards"))
-    cap = cv2.VideoCapture(0)
-    cap.set(3, 640)
-    cap.set(4, 480)
+    """
+    cap = cv2.VideoCapture(0, cv2.CAP_MSMF)
+    cap.set(3, 960)
+    cap.set(4, 720)
 
-    frame_placeholder = st.empty()
+    #frame_placeholder = st.empty()
     detected_classes = []
     for _ in range(10):
         ret, frame = cap.read()
         if ret:
-            frame_placeholder.image(frame, channels="BGR")
+            #frame_placeholder.image(frame, channels="BGR")
             detected_classes.extend(detector.capture_a_frame(cap))
     cap.release()
-    frame_placeholder.empty()
+    #frame_placeholder.empty()
 
     detections = detector.aggregate_detections(detected_classes)
     detected_cards = st.session_state.game.sort_cards(detector.parse_cards(detections))
 
     if detected_cards:
-        st.success(texts.get("cards_detected"))
+        #st.success(texts.get("cards_detected"))
 
         # TODO: Paneme detected_cards ja see teine ka tekstifaili 
         st.session_state.cards_team_a = detected_cards
-        st.session_state.cards_team_b = st.session_state.game.get_other_cards(detected_cards)
-        with open("detected_cards.txt", "w") as f:
+        #st.session_state.cards_team_b = st.session_state.game.get_other_cards(detected_cards)
+        with open("detected_cards.txt", "w", encoding="utf-8") as f:
             f.truncate(0)
             for card in st.session_state.cards_team_a:
-                f.write(card + " ")
+                f.write(str(card) + " ")
+            """
             f.write("\n")
             for card in st.session_state.cards_team_b:
-                f.write(card + " ")
-            f.write("\n")
+                f.write(str(card) + " ")
+            f.write("\n")"""
     else:
-        st.error(texts.get("no_cards_detected"))
+        #st.error(texts.get("no_cards_detected"))
+        1+1
 
 # ----------------------------------------------------------------------------------
 
