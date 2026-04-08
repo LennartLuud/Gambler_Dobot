@@ -11,6 +11,9 @@ eel_teg = ""
 otsus = ""
 killswitch = 0
 print(fail)
+raha = 1000
+algRaha = raha
+panus = 0
 
 def sumo(nimekiri):
     ajut = 0
@@ -41,7 +44,7 @@ def sumo(nimekiri):
     return ajut
 
 def saa_seis(fail):
-    global minul, temal, p_eel, d_eel, killswitch
+    global minul, temal, p_eel, d_eel, killswitch, kaardidKäes
     with open(fail, "r") as f:
         read = f.readlines()
     try:
@@ -53,6 +56,7 @@ def saa_seis(fail):
     else:
         minul = sumo(ma)
         temal = sumo(ta)
+		kaardidKäes = ma
         p_eel = ma; d_eel = ta
     print(minul, temal)
 
@@ -61,18 +65,31 @@ def kaik():
     print("aju = töötab")
     if minul < 17:
         otsus = "hit"
-        hitMe()
-        eel_teg = otsus
-    elif minul >= 17 and minul <= 21:
-        otsus = "stand"
-        stand()
         eel_teg = otsus
     elif minul > 21:
         otsus = "bust"
-        lose()
+        eel_teg = otsus
+    elif (minul == 17) and (len(kaardidKäes) == 2) and ("A" in kaardidKäes):
+        otsus = "doubledown"
+        eel_teg = otsus
+        panus = panus*2
+    elif minul >= 17 and minul <= 21:
+        otsus = "stand"
         eel_teg = otsus
 
+def BetSize(raha):
+    variability = random.randrange(-0.05, 0.05)
+    desperationScore = 1 - (raha / algRaha)
+    betConstant = min(0.1 * (raha / algRaha), 0.80)
 
+    if raha == 0:
+        betSize = 0
+    if random.randrange(0, 1) > desperationScore:
+        betSize = round((betConstant * raha) * (1 + variability))
+    else:
+        betSize = raha
+
+    return betSize
 
 def moveto(x, y, z):
 	current_pose = dType.GetPose(api)
