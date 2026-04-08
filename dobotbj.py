@@ -2,25 +2,15 @@
 from time import sleep
 import math
 
-fail = "C:/Users/ligi.sn7a493/Documents/Gambler_Dobot-main/detected_cards.txt"
+fail = "C:/Users/luud.lt7a493/Desktop/luud proge/python/dobonontsik/detected_cards.txt"
 minul = 0 #summad
 temal = 0
-kord = "player" #str: player, wait
 p_eel = [0]
 d_eel = [0]
 eel_teg = ""
 otsus = ""
 killswitch = 0
 print(fail)
-
-import threading
-from silmad.demo_application.model_visualization import fetchcards
-
-thread = threading.Thread(target=run_detection, daemon=True)
-thread.start()
-
-print(fetchcards())
-print("aaa")
 
 def sumo(nimekiri):
     ajut = 0
@@ -51,10 +41,13 @@ def sumo(nimekiri):
     return ajut
 
 def saa_seis(fail):
-    global minul, temal, kord, p_eel, d_eel, killswitch
+    global minul, temal, p_eel, d_eel, killswitch
     with open(fail, "r") as f:
         read = f.readlines()
-    ma = read[0].strip().split(); ta = read[1].strip().split(); killswitch = int(read[2].strip())
+    try:
+        ma = read[0].strip().split(); ta = read[1].strip().split(); killswitch = int(read[2].strip())
+    except: ma = read[0].strip().split(); ta = read[1].strip().split(); killswitch = int(read[2].strip())
+    ma.sort(), ta.sort()
     if p_eel == ma and d_eel == ta:
         sleep(1);print("ootan, sama")
     else:
@@ -65,15 +58,18 @@ def saa_seis(fail):
 
 def kaik():
     global otsus, minul, temal, eel_teg
-    print("aju = t��tab")
+    print("aju = töötab")
     if minul < 17:
         otsus = "hit"
+        hitMe()
         eel_teg = otsus
     elif minul >= 17 and minul <= 21:
         otsus = "stand"
+        stand()
         eel_teg = otsus
     elif minul > 21:
         otsus = "bust"
+        lose()
         eel_teg = otsus
 
 
@@ -125,33 +121,30 @@ def win():
 
 dType.SetPTPCoordinateParamsEx(api,500,2000,500,2000,1)
 moveto(240, -14, -4)
-hitMe()
-stand()
-lose()
-win()
 
+kord = "player"
 while killswitch == 0:
     saa_seis(fail)
     if kord == "wait":
-        sleep(3)
-        killswitch = 1
+        if temal > 21:
+            print("juhhuu")
+            win()
+            killswitch = 1
+        elif temal < minul and temal >= 17:
+            print("juhhuu")
+            win()
+            killswitch = 1
+        elif temal > minul:
+            print("BWAAAAA :(((((")
+            lose()
+            killswitch = 1
     elif kord == "player":
         kaik()
         print(otsus)
-        if otsus == "hit":
-            hitMe()
-        elif otsus == "stand":
-            stand()
+        if otsus == "stand":
             kord = "wait"
-            killswitch = 1
-        elif otsus == "bust":
-            lose()
-            kord == "wait"
-            killswitch = 1
-            sleep(3)
 
-        elif kord == "wait":
-            sleep(3)
-            killswitch = 1
+        elif otsus == "bust":
+            kord == "wait"
 
 print("tsau")
