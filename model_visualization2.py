@@ -12,7 +12,7 @@ SHOW_CONFIDENCE = True
 
 configuration_dict = {
     "synthetic": {
-        "model_path": "C:/Users/ligi.sn7a493/Documents/Gambler_Dobot-main/silmad/demo_application/final_models/yolov8m_synthetic.pt",
+        "model_path": "C:/Users/luud.lt7a493/Desktop/luud proge/python/dobonontsik/yolov8m_synthetic.pt",
         "class_names": [
             "10", "10", "10", "10",
             "2",  "2",  "2",  "2",
@@ -120,7 +120,7 @@ class CameraThread(threading.Thread):
             try:
                 cam0_cards = camera_state[0]["stable_cards"]
                 cam1_cards = camera_state[1]["stable_cards"]
-                with open("detected_cards.txt", "w", encoding="utf-8") as f:
+                with open("C:/Users/luud.lt7a493/Desktop/luud proge/python/dobonontsik/detected_cards.txt", "w", encoding="utf-8") as f:
                     f.write(" ".join(cam0_cards) + "\n")
                     f.write(" ".join(cam1_cards) + "\n")
                     f.write("0")
