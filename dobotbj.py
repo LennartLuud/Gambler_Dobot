@@ -2,7 +2,7 @@
 from time import sleep
 import math
 
-fail = "C:/Users/luud.lt7a493/Desktop/kaardid.txt"
+fail = "C:/Users/ligi.sn7a493/Documents/Gambler_Dobot-main/detected_cards.txt"
 minul = 0 #summad
 temal = 0
 kord = "player" #str: player, wait
@@ -11,6 +11,16 @@ d_eel = [0]
 eel_teg = ""
 otsus = ""
 killswitch = 0
+print(fail)
+
+import threading
+from silmad.demo_application.model_visualization import fetchcards
+
+thread = threading.Thread(target=run_detection, daemon=True)
+thread.start()
+
+print(fetchcards())
+print("aaa")
 
 def sumo(nimekiri):
     ajut = 0
@@ -55,7 +65,7 @@ def saa_seis(fail):
 
 def kaik():
     global otsus, minul, temal, eel_teg
-    print("aju = töötab")
+    print("aju = tï¿½ï¿½tab")
     if minul < 17:
         otsus = "hit"
         eel_teg = otsus

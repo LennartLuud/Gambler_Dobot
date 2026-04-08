@@ -1,8 +1,7 @@
-fail = "C:/Users/luud.lt7a493/Desktop/kaardid.txt"
+fail = "C:/Users/ligi.sn7a493/Documents/Gambler_Dobot-main/detected_cards.txt"
 from time import sleep
 minul = 0 #summad
 temal = 0
-kord = "" #str: player, wait
 p_eel = [0]
 d_eel = [0]
 eel_teg = ""
@@ -38,10 +37,13 @@ def sumo(nimekiri):
     return ajut
 
 def saa_seis(fail):
-    global minul, temal, kord, p_eel, d_eel, killswitch
+    global minul, temal, p_eel, d_eel, killswitch
     with open(fail, "r") as f:
         read = f.readlines()
-    ma = read[0].strip().split(); ta = read[1].strip().split(); kord = read[2].strip(); killswitch = int(read[3].strip())
+    #print(read)
+    try:
+        ma = read[0].strip().split(); ta = read[1].strip().split(); killswitch = int(read[2].strip())
+    except: ma = read[0].strip().split(); ta = read[1].strip().split(); killswitch = int(read[2].strip())
     ma.sort(), ta.sort()
     if p_eel == ma and d_eel == ta:
         sleep(1);print("ootan, sama")
@@ -49,7 +51,7 @@ def saa_seis(fail):
         minul = sumo(ma)
         temal = sumo(ta)
         p_eel = ma; d_eel = ta
-    print(minul, temal)
+    print("minul:", minul, "dr house:", temal)
 
 def kaik():
     global otsus, minul, temal, eel_teg
@@ -64,25 +66,26 @@ def kaik():
         otsus = "bust"
         eel_teg = otsus
 
-
+kord = "player"
 while killswitch == 0:
     saa_seis(fail)
     if kord == "wait":
-        sleep(3)
-        killswitch = 1
+        if temal > 21:
+            print("juhhuu")
+            killswitch = 1
+        elif temal < minul and temal >= 17:
+            print("juhhuu")
+            killswitch = 1
+        elif temal > minul:
+            print("BWAAAAA :(((((")
+            killswitch = 1
     elif kord == "player":
         kaik()
         print(otsus)
         if otsus == "stand":
             kord = "wait"
-            killswitch = 1
+
         elif otsus == "bust":
             kord == "wait"
-            killswitch = 1
-            sleep(3)
-
-        elif kord == "wait":
-            sleep(3)
-            killswitch = 1
 
 print("tsau")
