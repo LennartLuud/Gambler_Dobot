@@ -109,7 +109,7 @@ class CameraThread(threading.Thread):
             frame_history.append(set(detected_cards))
             frame_count += 1
 
-            if frame_count % 10 == 0:
+            if frame_count % 1 == 0:
                 all_cards = [card for frame in frame_history for card in frame]
                 counts = Counter(all_cards)
                 stable = [card for card, count in counts.items() if count >= 6]
@@ -124,6 +124,7 @@ class CameraThread(threading.Thread):
                     f.write(" ".join(cam0_cards) + "\n")
                     f.write(" ".join(cam1_cards) + "\n")
                     f.write("0")
+                    print(cam1_cards, cam0_cards)
             finally:
                 file_lock.release()
 
