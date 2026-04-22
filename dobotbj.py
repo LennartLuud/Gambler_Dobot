@@ -1,19 +1,24 @@
-#Magician
 from time import sleep
 import math
+import random
 
 fail = "C:/Users/luud.lt7a493/Desktop/luud proge/python/dobonontsik/detected_cards.txt"
+rahafail = open("C:\Users\luud.lt7a493\Desktop\luud proge\python\dobonontsik\raha.txt", a)
 minul = 0 #summad
 temal = 0
+kord = "player" #str: player, wait
 p_eel = [0]
 d_eel = [0]
 eel_teg = ""
 otsus = ""
 killswitch = 0
-print(fail)
-raha = 1000
+# VAADATA RAHA KIRJUTAMINE ÜLE
+raha = int(read(rahafail))
 algRaha = raha
 panus = 0
+toomas_sularaha = ""
+kaija = True
+ma = []
 
 def sumo(nimekiri):
     ajut = 0
@@ -44,50 +49,59 @@ def sumo(nimekiri):
     return ajut
 
 def saa_seis(fail):
-    global minul, temal, p_eel, d_eel, killswitch, kaardidKäes
+    global minul, temal, kord, p_eel, d_eel, killswitch, toomas_sularaha, kaija, ma
     with open(fail, "r") as f:
         read = f.readlines()
-    try:
-        ma = read[0].strip().split(); ta = read[1].strip().split(); killswitch = int(read[2].strip())
-    except: ma = read[0].strip().split(); ta = read[1].strip().split(); killswitch = int(read[2].strip())
-    ma.sort(), ta.sort()
-    if p_eel == ma and d_eel == ta:
-        sleep(1);print("ootan, sama")
+    if read != toomas_sularaha:
+	    toomas_sularaha = read
+	    ma = read[0].strip().split(); ta = read[1].strip().split(); killswitch = int(read[2].strip())
+	    if p_eel == ma and d_eel == ta:
+		    sleep(1);print("ootan, sama")
+	    else:
+		    minul = sumo(ma)
+		    temal = sumo(ta)
+		    p_eel = ma; d_eel = ta
+	    print(minul, temal)
+	    kaija = True
     else:
-        minul = sumo(ma)
-        temal = sumo(ta)
-		kaardidKäes = ma
-        p_eel = ma; d_eel = ta
-    print(minul, temal)
+	    kaija = False
 
 def kaik():
-    global otsus, minul, temal, eel_teg
-    print("aju = töötab")
-    if minul < 17:
-        otsus = "hit"
-        eel_teg = otsus
-    elif minul > 21:
-        otsus = "bust"
-        eel_teg = otsus
-    elif (minul == 17) and (len(kaardidKäes) == 2) and ("A" in kaardidKäes):
-        otsus = "doubledown"
-        eel_teg = otsus
-        panus = panus*2
-    elif minul >= 17 and minul <= 21:
-        otsus = "stand"
-        eel_teg = otsus
+    global otsus, minul, temal, eel_teg, kaija, panus, raha
+    if kaija == False:
+        #print("a ple minu asi lowk")
+        otsus = "ei"
+        sleep(1)
+    elif kaija == True:
+    		#print("aju = töötab")
+    		if minul < 17:
+        		otsus = "hit"
+        		eel_teg = otsus
+    		elif minul > 21:
+        		otsus = "bust"
+        		raha -= panus
+        		eel_teg = otsus
+    		elif (minul == 17) and (len(ma) == 2) and ("A" in ma):
+        		otsus = "doubledown"
+        		eel_teg = otsus
+        		panus = panus*2
+    		elif minul >= 17 and minul <= 21:
+        		otsus = "stand"
+        		eel_teg = otsus
 
-def BetSize(raha):
-    variability = random.randrange(-0.05, 0.05)
+def BetSize():
+    global raha, algRaha
+    variability = random.uniform(-0.05, 0.05)
     desperationScore = 1 - (raha / algRaha)
     betConstant = min(0.1 * (raha / algRaha), 0.80)
 
     if raha == 0:
         betSize = 0
-    if random.randrange(0, 1) > desperationScore:
+    if random.uniform(0, 1) > desperationScore:
         betSize = round((betConstant * raha) * (1 + variability))
     else:
-        betSize = raha
+	    print("ALL IN!")
+	    betSize = raha
 
     return betSize
 
@@ -107,6 +121,13 @@ def hitMe():
 		deltamove(0,0,-10)
 		deltamove(0,0,10)
 	dType.SetPTPCoordinateParamsEx(api,500,1000,500,1000,1)
+	deltamove(0,0, 55)
+
+def doubleDown():
+	global panus
+	dType.SetPTPCoordinateParamsEx(api,500,1000,500,1000,1)
+	deltamove(0,0,-55)
+	sleep(1)
 	deltamove(0,0, 55)
 
 def stand():
@@ -138,30 +159,60 @@ def win():
 
 dType.SetPTPCoordinateParamsEx(api,500,2000,500,2000,1)
 moveto(240, -14, -4)
+#hitMe()
+#stand()
+#lose()
+#win()
 
-kord = "player"
+panus = BetSize()
+print("Alles " + str(raha) + " euri")
+print("Panustan " + str(panus) + " euri")
 while killswitch == 0:
     saa_seis(fail)
     if kord == "wait":
-        if temal > 21:
-            print("juhhuu")
-            win()
-            killswitch = 1
-        elif temal < minul and temal >= 17:
-            print("juhhuu")
-            win()
-            killswitch = 1
-        elif temal > minul:
-            print("BWAAAAA :(((((")
-            lose()
-            killswitch = 1
+        sleep(3)
+        killswitch = 1
     elif kord == "player":
         kaik()
         print(otsus)
-        if otsus == "stand":
+        if otsus == "hit":
+            hitMe()
+        elif otsus == "doubledown":
+            #print("DOUBLE OR NOTHING BABY")
+            doubleDown()
+            killswitch = 1
+        elif otsus == "stand":
+            stand()
             kord = "wait"
-
+            killswitch = 1
         elif otsus == "bust":
-            kord == "wait"
+            lose()
+            kord = "wait"
+            killswitch = 1
+            sleep(3)
 
+        elif kord == "wait":
+            sleep(3)
+            killswitch = 1
+
+        elif kord == "ei":
+            sleep(1)
+
+while temal < 17:
+	saa_seis(fail)
+	#print("honk mimimi")
+	sleep(1)
+	
+killswitch = 1
+
+if killswitch == 1:
+	if minul < 22:
+		if minul >= temal:
+			raha += panus
+			win()
+		else:
+			raha -= panus
+			lose()
+print("Raha on nüüd " + str(raha))
+rahafail.write(str(raha))
 print("tsau")
