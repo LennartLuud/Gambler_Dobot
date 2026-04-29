@@ -84,7 +84,7 @@ def kaik():
     		elif (minul == 17) and (len(ma) == 2) and ("A" in ma):
         		otsus = "doubledown"
         		eel_teg = otsus
-        		panus = panus*2
+        		panus = min(panus*2, raha)
     		elif minul >= 17 and minul <= 21:
         		otsus = "stand"
         		eel_teg = otsus
@@ -102,7 +102,7 @@ def BetSize():
     else:
 	    print("ALL IN!")
 	    betSize = raha
-
+		
     return betSize
 
 def moveto(x, y, z):
