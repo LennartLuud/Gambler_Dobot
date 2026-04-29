@@ -163,56 +163,63 @@ moveto(240, -14, -4)
 #stand()
 #lose()
 #win()
-
-panus = BetSize()
-print("Alles " + str(raha) + " euri")
-print("Panustan " + str(panus) + " euri")
-while killswitch == 0:
-    saa_seis(fail)
-    if kord == "wait":
-        sleep(3)
-        killswitch = 1
-    elif kord == "player":
-        kaik()
-        print(otsus)
-        if otsus == "hit":
-            hitMe()
-        elif otsus == "doubledown":
-            #print("DOUBLE OR NOTHING BABY")
-            doubleDown()
-            killswitch = 1
-        elif otsus == "stand":
-            stand()
-            kord = "wait"
-            killswitch = 1
-        elif otsus == "bust":
-            lose()
-            kord = "wait"
-            killswitch = 1
-            sleep(3)
-
-        elif kord == "wait":
+while looping == True:
+    panus = BetSize()
+    print("Alles " + str(raha) + " euri")
+    print("Panustan " + str(panus) + " euri")
+    while killswitch == 0:
+        saa_seis(fail)
+        if kord == "wait":
             sleep(3)
             killswitch = 1
+        elif kord == "player":
+            kaik()
+            print(otsus)
+            if otsus == "hit":
+                hitMe()
+            elif otsus == "doubledown":
+                #print("DOUBLE OR NOTHING BABY")
+                doubleDown()
+                killswitch = 1
+            elif otsus == "stand":
+                stand()
+                kord = "wait"
+                killswitch = 1
+            elif otsus == "bust":
+                lose()
+                kord = "wait"
+                killswitch = 1
+                sleep(3)
 
-        elif kord == "ei":
-            sleep(1)
+            elif kord == "wait":
+                sleep(3)
+                killswitch = 1
 
-while temal < 17:
-	saa_seis(fail)
-	#print("honk mimimi")
-	sleep(1)
-	
-killswitch = 1
+            elif kord == "ei":
+                sleep(1)
 
-if killswitch == 1:
-	if minul < 22:
-		if minul >= temal:
-			raha += panus
-			win()
+    while temal < 17:
+        saa_seis(fail)
+        #print("honk mimimi")
+        sleep(1)
+        
+    killswitch = 1
+
+    if killswitch == 1:
+        if minul < 22:
+            if minul >= temal:
+                raha += panus
+                win()
+            else:
+                raha -= panus
+                lose()
+    print("Raha on nüüd " + str(raha))
+    rahafail.write(str(raha))
+	if int(raha) <= 0:
+		looping = False
+	while looping == True:
+		if minul == temal == 0:
+			looping = False
 		else:
-			raha -= panus
-			lose()
-print("Raha on nüüd " + str(raha))
-rahafail.write(str(raha))
+			sleep(1)
 print("tsau")
