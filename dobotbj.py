@@ -3,7 +3,7 @@ import math
 import random
 
 fail = "C:/Users/luud.lt7a493/Desktop/luud proge/python/dobonontsik/detected_cards.txt"
-rahafail = open("C:\Users\luud.lt7a493\Desktop\luud proge\python\dobonontsik\raha.txt", a)
+rahafail = open("C:/Users/luud.lt7a493/Desktop/luud proge/python/dobonontsik/raha.txt", "w+")
 minul = 0 #summad
 temal = 0
 kord = "player" #str: player, wait
@@ -13,12 +13,13 @@ eel_teg = ""
 otsus = ""
 killswitch = 0
 # VAADATA RAHA KIRJUTAMINE ÜLE
-raha = int(read(rahafail))
+raha = int(rahafail.read())
 algRaha = raha
 panus = 0
 toomas_sularaha = ""
 kaija = True
 ma = []
+looping = True
 
 def sumo(nimekiri):
     ajut = 0
@@ -61,7 +62,7 @@ def saa_seis(fail):
 		    minul = sumo(ma)
 		    temal = sumo(ta)
 		    p_eel = ma; d_eel = ta
-	    print(minul, temal)
+	    print("mul", minul, "tal", temal)
 	    kaija = True
     else:
 	    kaija = False
@@ -215,11 +216,12 @@ while looping == True:
                 lose()
     print("Raha on nüüd " + str(raha))
     rahafail.write(str(raha))
-	if int(raha) <= 0:
-		looping = False
-	while looping == True:
-		if minul == temal == 0:
-			looping = False
-		else:
-			sleep(1)
+    if int(raha) <= 0:
+        looping = False
+    while looping == True:
+        print("jarvis, check my loop", minul, temal)
+        if minul == temal == 0:
+            looping = False
+        else:
+            sleep(1)
 print("tsau")
