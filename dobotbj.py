@@ -1,9 +1,11 @@
 from time import sleep
 import math
 import random
-
+print("1")
 fail = "C:/Users/luud.lt7a493/Desktop/luud proge/python/dobonontsik/detected_cards.txt"
-rahafail = open("C:/Users/luud.lt7a493/Desktop/luud proge/python/dobonontsik/raha.txt", "w+")
+print("2")
+rahafail = open("C:/Users/luud.lt7a493/Desktop/luud proge/python/dobonontsik/raha.txt", "r+")
+print("3")
 minul = 0 #summad
 temal = 0
 kord = "player" #str: player, wait
@@ -12,15 +14,17 @@ d_eel = [0]
 eel_teg = ""
 otsus = ""
 killswitch = 0
-# VAADATA RAHA KIRJUTAMINE ÜLE
-raha = int(rahafail.read())
+# VAADATA RAHA KIRJUTAMINE YLE
+rahafail.seek(0)
+raha = int(str(rahafail.read())); print(raha)
+raha = int(raha)
 algRaha = raha
 panus = 0
 toomas_sularaha = ""
 kaija = True
 ma = []
 looping = True
-
+looping2 = True
 def sumo(nimekiri):
     ajut = 0
     assad = 0
@@ -74,7 +78,7 @@ def kaik():
         otsus = "ei"
         sleep(1)
     elif kaija == True:
-    		#print("aju = töötab")
+    		#print("aju = t66tab")
     		if minul < 17:
         		otsus = "hit"
         		eel_teg = otsus
@@ -208,20 +212,25 @@ while looping == True:
 
     if killswitch == 1:
         if minul < 22:
-            if minul >= temal:
+            if minul > temal or temal > 21:
                 raha += panus
                 win()
+            elif minul == temal:
+                stand()
             else:
                 raha -= panus
                 lose()
-    print("Raha on nüüd " + str(raha))
+    print("Raha on nyyd " + str(raha))
+    rahafail.seek(0)
     rahafail.write(str(raha))
     if int(raha) <= 0:
         looping = False
-    while looping == True:
+    while looping2 == True:
+        saa_seis(fail)
         print("jarvis, check my loop", minul, temal)
         if minul == temal == 0:
-            looping = False
+            looping2 = False
+            kord = "player"
         else:
             sleep(1)
 print("tsau")
