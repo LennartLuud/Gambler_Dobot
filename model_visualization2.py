@@ -14,27 +14,37 @@ configuration_dict = {
     "synthetic": {
         "model_path": "C:/Users/luud.lt7a493/Desktop/luud proge/python/dobonontsik/yolov8m_synthetic.pt",
         "class_names": [
-            "10", "10", "10", "10",
-            "2",  "2",  "2",  "2",
-            "3",  "3",  "3",  "3",
-            "4",  "4",  "4",  "4",
-            "5",  "5",  "5",  "5",
-            "6",  "6",  "6",  "6",
-            "7",  "7",  "7",  "7",
-            "8",  "8",  "8",  "8",
-            "9",  "9",  "9",  "9",
-            "A",  "A",  "A",  "A",
-            "J",  "J",  "J",  "J",
-            "K",  "K",  "K",  "K",
-            "Q",  "Q",  "Q",  "Q",
+            "10C", "10D", "10H", "10S",
+            "2C",  "2D",  "2H",  "2S",
+            "3C",  "3D",  "3H",  "3S",
+            "4C",  "4D",  "4H",  "4S",
+            "5C",  "5D",  "5H",  "5S",
+            "6C",  "6D",  "6H",  "6S",
+            "7C",  "7D",  "7H",  "7S",
+            "8C",  "8D",  "8H",  "8S",
+            "9C",  "9D",  "9H",  "9S",
+            "AC",  "AD",  "AH",  "AS",
+            "JC",  "JD",  "JH",  "JS",
+            "KC",  "KD",  "KH",  "KS",
+            "QC",  "QD",  "QH",  "QS",
         ],
     },
 }
 
 card_values = {
-    "2": 2, "3": 3, "4": 4, "5": 5, "6": 6,
-    "7": 7, "8": 8, "9": 9, "10": 10,
-    "A": 1, "J": 10, "K": 10, "Q": 10,
+    "2C": 2,  "2D": 2,  "2H": 2,  "2S": 2,
+    "3C": 3,  "3D": 3,  "3H": 3,  "3S": 3,
+    "4C": 4,  "4D": 4,  "4H": 4,  "4S": 4,
+    "5C": 5,  "5D": 5,  "5H": 5,  "5S": 5,
+    "6C": 6,  "6D": 6,  "6H": 6,  "6S": 6,
+    "7C": 7,  "7D": 7,  "7H": 7,  "7S": 7,
+    "8C": 8,  "8D": 8,  "8H": 8,  "8S": 8,
+    "9C": 9,  "9D": 9,  "9H": 9,  "9S": 9,
+    "10C":10, "10D":10, "10H":10, "10S":10,
+    "AC": 1,  "AD": 1,  "AH": 1,  "AS": 1,
+    "JC": 10, "JD": 10, "JH": 10, "JS": 10,
+    "KC": 10, "KD": 10, "KH": 10, "KS": 10,
+    "QC": 10, "QD": 10, "QH": 10, "QS": 10,
 }
 
 # Shared state per camera
@@ -51,6 +61,8 @@ current_config = configuration_dict[DEFAULT_MODEL]
 classNames = current_config["class_names"]
 model_path = current_config["model_path"]
 file_lock = threading.Lock()
+
+last_written_state = {"cam0": [], "cam1": []}
 
 class CameraThread(threading.Thread):
     def __init__(self, cam_id):
@@ -109,21 +121,31 @@ class CameraThread(threading.Thread):
             frame_history.append(set(detected_cards))
             frame_count += 1
 
-            if frame_count % 1 == 0:
+            if frame_count % 5 == 0:
                 all_cards = [card for frame in frame_history for card in frame]
                 counts = Counter(all_cards)
                 stable = [card for card, count in counts.items() if count >= 6]
 
+                # If nothing detected recently, clear immediately
+                if not detected_cards:
+                    stable = []
+
                 with camera_state[self.cam_id]["lock"]:
                     camera_state[self.cam_id]["stable_cards"] = stable
+            
+
             file_lock.acquire()
             try:
-                cam0_cards = camera_state[0]["stable_cards"]
-                cam1_cards = camera_state[1]["stable_cards"]
-                with open("C:/Users/luud.lt7a493/Desktop/luud proge/python/dobonontsik/detected_cards.txt", "w", encoding="utf-8") as f:
-                    f.write(" ".join(cam0_cards) + "\n")
-                    f.write(" ".join(cam1_cards) + "\n")
-                    f.write("0")
+                cam0_cards = [c[:-1] if not c.startswith("10") else "10" for c in camera_state[0]["stable_cards"]]
+                cam1_cards = [c[:-1] if not c.startswith("10") else "10" for c in camera_state[1]["stable_cards"]]
+                
+                if cam0_cards != last_written_state["cam0"] or cam1_cards != last_written_state["cam1"]:
+                    last_written_state["cam0"] = cam0_cards
+                    last_written_state["cam1"] = cam1_cards
+                    with open("C:/Users/luud.lt7a493/Desktop/luud proge/python/dobonontsik/detected_cards.txt", "w") as f:
+                        f.write(" ".join(cam0_cards) + "\n")
+                        f.write(" ".join(cam1_cards) + "\n")
+                        f.write("0")
                     print(cam1_cards, cam0_cards)
             finally:
                 file_lock.release()
