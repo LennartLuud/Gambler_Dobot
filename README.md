@@ -1,8 +1,9 @@
-double down: 
-def doubledown():
-	dType.SetPTPCoordinateParamsEx(api,500,1000,500,1000,1)
-	deltamove(40,0,0)
-	deltamove(-80,0,0)
-	sleep(0.1)
-	deltamove(80,0,0)
-	deltamove(40,0,0)
+## WE LOVE GAMBLING
+Suht lihtne ja labane lahendus dobotile blackjacki mängimiseks.
+# -setup-
+1) Model visualisation kasutab [Teodor Kostadinovi kaardituvastuslahendust](https://github.com/TeogopK/Playing-Cards-Object-Detection), sealt on vaja hankida [sünteetiline dataset](https://github.com/TeogopK/Playing-Cards-Object-Detection/blob/main/final_models/yolov8m_synthetic.pt) ning model_visualisation2.py  "model_path": muutuja suunata selleni
+2) Dobot studios on vaja avada fail dobotbj.py ning ühendada programm dobotiga
+3) Peale doboti ühendamist on vaja ühendada arvutiga 2 kaamerat, cam1 on dobot, cam0 on dealer
+4) Mõlemad failid on vaja suunata sama tekstifaili poole, kus dobot saab kaardid kätte. meie näites muutuja fail ("detected_cards.txt")
+5) Esmalt käivitada model_visualisation2.py ning oodata kuni 2 kaamerapilti ilmuvad
+6) Seejärel võib käivitada doboti programmi ning mängima asuda
