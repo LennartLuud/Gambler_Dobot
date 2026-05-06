@@ -6,15 +6,14 @@ fail = "C:/Users/luud.lt7a493/Desktop/luud proge/python/dobonontsik/detected_car
 print("2")
 rahafail = open("C:/Users/luud.lt7a493/Desktop/luud proge/python/dobonontsik/raha.txt", "r+")
 print("3")
-minul = 0 #summad
+minul = 0 
 temal = 0
-kord = "player" #str: player, wait
+kord = "player" 
 p_eel = [0]
 d_eel = [0]
 eel_teg = ""
 otsus = ""
 killswitch = 0
-# VAADATA RAHA KIRJUTAMINE YLE
 rahafail.seek(0)
 raha = int(str(rahafail.read())); print(raha)
 raha = int(raha)
@@ -25,6 +24,7 @@ kaija = True
 ma = []
 looping = True
 looping2 = True
+
 def sumo(nimekiri):
     ajut = 0
     assad = 0
@@ -54,45 +54,44 @@ def sumo(nimekiri):
     return ajut
 
 def saa_seis(fail):
-    global minul, temal, kord, p_eel, d_eel, killswitch, toomas_sularaha, kaija, ma
-    with open(fail, "r") as f:
-        read = f.readlines()
-    if read != toomas_sularaha:
-	    toomas_sularaha = read
-	    ma = read[0].strip().split(); ta = read[1].strip().split(); killswitch = int(read[2].strip())
-	    if p_eel == ma and d_eel == ta:
-		    sleep(1);print("ootan, sama")
-	    else:
-		    minul = sumo(ma)
-		    temal = sumo(ta)
-		    p_eel = ma; d_eel = ta
-	    print("mul", minul, "tal", temal)
-	    kaija = True
-    else:
-	    kaija = False
+	global minul, temal, kord, p_eel, d_eel, killswitch, toomas_sularaha, kaija, ma
+	with open(fail, "r") as f:
+		read = f.readlines()
+	if read != toomas_sularaha:
+		toomas_sularaha = read
+		ma = read[0].strip().split(); ta = read[1].strip().split(); killswitch = int(read[2].strip())
+		if p_eel == ma and d_eel == ta:
+			sleep(1);print("ootan, sama")
+		else:
+			minul = sumo(ma)
+			temal = sumo(ta)
+			p_eel = ma; d_eel = ta
+		print("mul", minul, "tal", temal)
+		kaija = True
+	else:
+		kaija = False
 
 def kaik():
     global otsus, minul, temal, eel_teg, kaija, panus, raha
     if kaija == False:
-        #print("a ple minu asi lowk")
         otsus = "ei"
         sleep(1)
     elif kaija == True:
-    		#print("aju = t66tab")
-    		if minul < 17:
-        		otsus = "hit"
-        		eel_teg = otsus
-    		elif minul > 21:
-        		otsus = "bust"
-        		raha -= panus
-        		eel_teg = otsus
-    		elif (minul == 17) and (len(ma) == 2) and ("A" in ma):
-        		otsus = "doubledown"
-        		eel_teg = otsus
-        		panus = min(panus*2, raha)
-    		elif minul >= 17 and minul <= 21:
-        		otsus = "stand"
-        		eel_teg = otsus
+    		if minul != 0 and temal != 0:
+    			if minul < 17:
+        			otsus = "hit"
+        			eel_teg = otsus
+    			elif minul > 21:
+        			otsus = "bust"
+        			raha -= panus
+        			eel_teg = otsus
+    			elif (minul == 17) and (len(ma) == 2) and ("A" in ma):
+   		 		otsus = "doubledown"
+	    			eel_teg = otsus
+    				panus = min(panus*2, raha)
+   	 		elif minul >= 17 and minul <= 21:
+   	 			otsus = "stand"
+   	 			eel_teg = otsus
 
 def BetSize():
     global raha, algRaha
@@ -162,12 +161,21 @@ def win():
 	sleep(1)
 	deltamove(0,0,-50)
 
+def draw():
+	print("viik")
+	dType.SetPTPCoordinateParamsEx(api,1000,2000,1000,2000,1)
+	deltamove(0,0,50)
+	for i in range(2):
+		deltamove(50,-70, 0)
+		deltamove(-50,70,0)
+		deltamove(50,70, 0)
+		deltamove(-50,-70,0)
+	sleep(1)
+	deltamove(0,0,-50)
+
+
 dType.SetPTPCoordinateParamsEx(api,500,2000,500,2000,1)
 moveto(240, -14, -4)
-#hitMe()
-#stand()
-#lose()
-#win()
 while looping == True:
     panus = BetSize()
     print("Alles " + str(raha) + " euri")
@@ -179,11 +187,10 @@ while looping == True:
             killswitch = 1
         elif kord == "player":
             kaik()
-            print(otsus)
+            if otsus != "ei":	print(otsus)
             if otsus == "hit":
                 hitMe()
             elif otsus == "doubledown":
-                #print("DOUBLE OR NOTHING BABY")
                 doubleDown()
                 killswitch = 1
             elif otsus == "stand":
@@ -205,18 +212,19 @@ while looping == True:
 
     while temal < 17:
         saa_seis(fail)
-        #print("honk mimimi")
         sleep(1)
-        
+        if otsus == "bust":
+            break
+       
+    print("loeme kokku")
     killswitch = 1
-
     if killswitch == 1:
         if minul < 22:
             if minul > temal or temal > 21:
                 raha += panus
                 win()
             elif minul == temal:
-                stand()
+                draw()
             else:
                 raha -= panus
                 lose()
@@ -225,12 +233,15 @@ while looping == True:
     rahafail.write(str(raha))
     if int(raha) <= 0:
         looping = False
+    looping2 = True
+
     while looping2 == True:
         saa_seis(fail)
         print("jarvis, check my loop", minul, temal)
         if minul == temal == 0:
             looping2 = False
             kord = "player"
+            killswitch = 0
         else:
             sleep(1)
 print("tsau")
