@@ -1,5 +1,5 @@
 ## WE LOVE GAMBLING
-Suht lihtne ja labane lahendus dobotile blackjacki mängimiseks.
+Suht lihtne ja labane lahendus dobotile blackjacki mängimiseks. Video (hasartmängule kaasa elamiseks): https://youtu.be/V2wHL51SkAk
 # -setup-
 1) Model visualisation kasutab [Teodor Kostadinovi kaardituvastuslahendust](https://github.com/TeogopK/Playing-Cards-Object-Detection), sealt on vaja hankida [sünteetiline dataset](https://github.com/TeogopK/Playing-Cards-Object-Detection/blob/main/final_models/yolov8m_synthetic.pt) ning model_visualisation2.py  "model_path": muutuja suunata selleni
 2) Dobot studios on vaja avada fail dobotbj.py ning ühendada programm dobotiga
