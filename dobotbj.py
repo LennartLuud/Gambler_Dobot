@@ -77,7 +77,7 @@ def kaik():
         otsus = "ei"
         sleep(1)
     elif kaija == True:
-    		if minul != 0 and temal != 0:
+    		if len(ma) > 1 and temal != 0:
     			if minul < 17:
         			otsus = "hit"
         			eel_teg = otsus
