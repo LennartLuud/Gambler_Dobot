@@ -78,7 +78,10 @@ def kaik():
         sleep(1)
     elif kaija == True:
     		if len(ma) > 1 and temal != 0:
-    			if minul < 17:
+    			if len(ma) == 2 and minul == 21:
+        			otsus = "blackjack"
+        			eel_teg = otsus
+    			elif minul < 17:
         			otsus = "hit"
         			eel_teg = otsus
     			elif minul > 21:
@@ -202,6 +205,8 @@ while looping == True:
                 kord = "wait"
                 killswitch = 1
                 sleep(3)
+            elif otsus == "blackjack":
+                win()
 
             elif kord == "wait":
                 sleep(3)
