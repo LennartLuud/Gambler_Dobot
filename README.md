@@ -6,4 +6,4 @@ Suht lihtne ja labane lahendus dobotile blackjacki mängimiseks. Video (hasartm�
 3) Peale doboti ühendamist on vaja ühendada arvutiga 2 kaamerat, cam1 on dobot, cam0 on dealer
 4) Mõlemad failid on vaja suunata sama tekstifaili poole, kus dobot saab kaardid kätte. meie näites muutuja fail ("detected_cards.txt")
 5) Esmalt käivitada model_visualisation2.py ning oodata kuni 2 kaamerapilti ilmuvad
-6) Seejärel võib käivitada doboti programmi ning mängima asuda
+6) Seejärel võib käivitada doboti programmi ning mängima asuda (inimene käitub kui diiler... duh)
